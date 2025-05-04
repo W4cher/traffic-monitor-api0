@@ -1,5 +1,7 @@
 from django.db import models
 from django.utils import timezone
+from django.core.exceptions import ValidationError
+import uuid
 
 class RoadSegment(models.Model):
     long_start = models.FloatField()
@@ -12,6 +14,10 @@ class RoadSegment(models.Model):
 
     def __str__(self):
         return f"{self.speed}"
+    
+    @property
+    def total_readings(self):
+        return self.readings.count()
 
 class TrafficIntensityRange(models.Model):
     INTENSITY_CHOICES = [
@@ -19,8 +25,8 @@ class TrafficIntensityRange(models.Model):
         ('medium', 'Medium'),
         ('high', 'High'),
     ]
-    min_speed = models.IntegerField()
-    max_speed = models.IntegerField()
+    min_speed = models.FloatField()
+    max_speed = models.FloatField()
     intensity = models.CharField(max_length=10, choices=INTENSITY_CHOICES)
 
     def __str__(self):
@@ -28,7 +34,7 @@ class TrafficIntensityRange(models.Model):
 
 class Reading(models.Model):
     road_segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE, related_name='readings')
-    average_speed = models.IntegerField()
+    average_speed = models.FloatField()
     intensity = models.CharField(max_length=10, choices=TrafficIntensityRange.INTENSITY_CHOICES)
     timestamp = models.DateTimeField(default=timezone.now)
 
@@ -44,7 +50,39 @@ class Reading(models.Model):
 
     def save(self, *args, **kwargs):
         self.intensity = self.calculate_intensity()
+        ranges = TrafficIntensityRange.objects.all()
+        for range_obj in ranges:
+            if range_obj.min_speed <= self.average_speed <= range_obj.max_speed:
+                self.intensity = range_obj.intensity
+                break
+        else:
+            raise ValidationError("Average speed does not fall within any defined intensity range.")
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.road_segment} - {self.average_speed} km/h ({self.intensity})"
+
+# part 3 do exercio 
+
+class Sensor(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return str(self.uuid)
+
+class Car(models.Model):
+    license_plate = models.CharField(max_length=20, unique=True)
+    registered_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.license_plate
+
+class VehiclePassage(models.Model):
+    road_segment = models.ForeignKey(RoadSegment, on_delete=models.CASCADE, related_name='passages')
+    car = models.ForeignKey(Car, on_delete=models.CASCADE, related_name='passages')
+    sensor = models.ForeignKey(Sensor, on_delete=models.CASCADE, related_name='passages')
+    timestamp = models.DateTimeField()
+
+    def __str__(self):
+        return f"{self.car} on {self.road_segment} at {self.timestamp}"
