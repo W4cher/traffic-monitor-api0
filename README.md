@@ -38,13 +38,14 @@ API REST para monitoramento de tráfego rodoviário, desenvolvida com Django RES
 
 ```bash
 # Clone e crie as pastas
-mkdir traffic_monitor_part1 && cd traffic_monitor_part1
-mkdir src data docs
+mkdir traffic_monitor0 && cd traffic_monitor0
+mkdir src && cd src
+mkdir data
 
 # Coloque os arquivos CSV:
 # - traffic_speed.csv
 # - sensors.csv
-# dentro de traffic_monitor_part1/data/
+# dentro de traffic_monitor0/src/data/
 
 # Acesse a pasta do projeto e rode:
 cd src
@@ -209,11 +210,5 @@ Acesse: [http://localhost:8000/api/docs/](http://localhost:8000/api/docs/)
 
 ## 👨‍💼 Autor
 
-Wacher Garcia
-Mestrando em Cibersegurança | CEO - Liga Reis da Roda Afro House
-
----
-
-## 🛍️ Licença
-
-[MIT License](LICENSE)
+Garcia Lisboa Mateus
+Software Engineering | UBIWHERE
