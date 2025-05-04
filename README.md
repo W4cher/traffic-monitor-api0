@@ -71,7 +71,7 @@ GET /api/road-segments/
 
 ```bash
 POST /api/road-segments/
-Authorization: Bearer <admin-token>
+Authorization:  Django Admin  http://localhost:8000/admin/ 
 ```
 
 ### 📈 Listar Leituras
@@ -84,7 +84,7 @@ GET /api/readings/
 
 ```bash
 POST /api/readings/
-Authorization: Bearer <admin-token>
+Authorization: Django Admin  http://localhost:8000/admin/ 
 ```
 
 ### 🚘 Enviar Passagens (Sensor via API Key)
@@ -98,7 +98,7 @@ X-API-Key: 23231c7a-80a7-4810-93b3-98a18ecfbc42
 
 ```bash
 GET /api/vehicle-passages/by-plate/?license_plate=AA16AA
-Authorization: Bearer <admin-token>
+
 ```
 
 ---
