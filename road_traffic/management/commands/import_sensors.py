@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Import sensors from CSV file'
 
     def handle(self, *args, **kwargs):
-        file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', 'sensors.csv')
+        file_path = os.path.join('data', 'sensors.csv')
         logger.info(f"Importing sensors from {file_path}")
         
         try:
