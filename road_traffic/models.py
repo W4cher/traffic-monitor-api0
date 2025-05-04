@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 import uuid
 
 class RoadSegment(models.Model):
+    name = models.CharField(max_length=100, blank=True)
     long_start = models.FloatField()
     lat_start = models.FloatField()
     long_end = models.FloatField()

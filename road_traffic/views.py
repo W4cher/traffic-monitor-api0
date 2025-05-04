@@ -16,10 +16,14 @@ class RoadSegmentViewSet(viewsets.ModelViewSet):
     serializer_class = RoadSegmentSerializer
     permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['readings__intensity']
+    # Defina explicitamente os campos permitidos para filtrar
+    filterset_fields = {
+        'readings__intensity': ['exact'],
+        # Não inclua 'name' aqui
+    }
 
     def get_queryset(self):
-        logger.info("Accessing ReadingViewSet")
+        logger.info("Accessing RoadSegmentViewSet")  # Corrigi de ReadingViewSet para RoadSegmentViewSet
         queryset = super().get_queryset()
 
         # Filtro por última leitura
@@ -71,5 +75,3 @@ class VehiclePassageByPlateList(generics.ListAPIView):
             timestamp__gte=time_threshold
         ).select_related('road_segment', 'car', 'sensor')
         return queryset
-    
-    

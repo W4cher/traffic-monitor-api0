@@ -9,18 +9,20 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         with open('data/traffic_speed.csv', 'r') as file:
             reader = csv.DictReader(file)
-            for row in reader:
+            for row in  reader:
                 # Criar ou atualizar RoadSegment
                 segment, _ = RoadSegment.objects.update_or_create(
-                    id=int(row['ID']),
+                
+                    long_start=float(row['Long_start']),
+                    lat_start=float(row['Lat_start']),
+                    long_end=float(row['Long_end']),
+                    lat_end=float(row['Lat_end']),
+                    length=float(row['Length']),
+                    speed=float(row['Speed']),
+
                     defaults={
-                        'long_start': float(row['Long_start']),
-                        'lat_start': float(row['Lat_start']),
-                        'long_end': float(row['Long_end']),
-                        'lat_end': float(row['Lat_end']),
-                        'length': float(row['Length']),
-                        'speed': float(row['Speed']),
-                    }
+                        'name': f"Segment {row['ID']}"
+                    }    
                 )
                 # Criar Reading
                 Reading.objects.create(

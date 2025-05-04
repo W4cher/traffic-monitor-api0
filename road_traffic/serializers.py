@@ -17,27 +17,9 @@ class RoadSegmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = RoadSegment
-        fields = ['id', 'long_start', 'lat_start', 'long_end', 'lat_end', 'length','speed', 'total_readings']
-
-
+        fields = ['id', 'name','long_start', 'lat_start', 'long_end', 'lat_end', 'length','speed', 'total_readings']
 
 # serialicao da part 3 do exercio 
-
-
-from rest_framework import serializers
-from .models import RoadSegment, Reading, Sensor, Car, VehiclePassage
-
-class RoadSegmentSerializer(serializers.ModelSerializer):
-    total_readings = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = RoadSegment
-        fields = ['id', 'name', 'long_start', 'lat_start', 'long_end', 'lat_end', 'length', 'created_at', 'total_readings']
-
-class ReadingSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Reading
-        fields = ['id', 'road_segment', 'average_speed', 'intensity', 'timestamp']
 
 class SensorSerializer(serializers.ModelSerializer):
     class Meta:
