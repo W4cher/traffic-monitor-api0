@@ -1,0 +1,40 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/traffic_db
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - static_volume:/app/staticfiles
+    command: >
+      sh -c "chmod +x /app/wait-for-db.sh &&
+         ls -l /app &&
+         ./wait-for-db.sh db 5432 &&
+         python manage.py makemigrations &&
+         python manage.py migrate &&
+         python manage.py collectstatic --noinput --clear &&
+         python manage.py import_data &&
+         python manage.py import_sensors &&
+         python manage.py runserver 0.0.0.0:8000"
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=traffic_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d traffic_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+volumes:
+  postgres_data:
+  static_volume:
